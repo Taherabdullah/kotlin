@@ -7,7 +7,6 @@ package org.jetbrains.kotlin.idea.caches.project
 
 import com.intellij.ide.highlighter.ArchiveFileType
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.fileTypes.FileTypeEvent
 import com.intellij.openapi.fileTypes.FileTypeListener
 import com.intellij.openapi.fileTypes.FileTypeManager
@@ -27,7 +26,8 @@ import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 class LibraryModificationTracker(project: Project) : SimpleModificationTracker() {
     companion object {
         @JvmStatic
-        fun getInstance(project: Project) = ServiceManager.getService(project, LibraryModificationTracker::class.java)!!
+        fun getInstance(project: Project) = project.getService(LibraryModificationTracker::class.java)
+            ?: error("Unable to locate service LibraryModificationTracker")
     }
 
     init {

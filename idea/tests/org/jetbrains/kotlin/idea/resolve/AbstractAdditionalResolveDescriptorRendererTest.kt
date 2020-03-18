@@ -9,7 +9,6 @@ import com.intellij.mock.MockProject
 import com.intellij.pom.PomModel
 import com.intellij.pom.core.impl.PomModelImpl
 import com.intellij.pom.tree.TreeAspect
-import com.intellij.psi.util.PsiModificationTracker
 import org.jetbrains.kotlin.container.ComponentProvider
 import org.jetbrains.kotlin.container.get
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
@@ -35,8 +34,7 @@ abstract class AbstractAdditionalResolveDescriptorRendererTest : AbstractDescrip
 
         (project as MockProject).registerService(PomModel::class.java, pomModelImpl)
         (project.picoContainer as MutablePicoContainer).registerComponentInstance(
-            KotlinCodeBlockModificationListener(
-                PsiModificationTracker.SERVICE.getInstance(project),
+            createKotlinCodeBlockModificationListener(
                 project,
                 treeAspect
             )

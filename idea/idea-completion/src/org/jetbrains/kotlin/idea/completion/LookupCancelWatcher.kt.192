@@ -23,6 +23,7 @@ import com.intellij.codeInsight.lookup.LookupEvent
 import com.intellij.codeInsight.lookup.LookupListener
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.RangeMarker
@@ -31,13 +32,12 @@ import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
 import com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.idea.statistics.CompletionFUSCollector
 import org.jetbrains.kotlin.idea.statistics.CompletionFUSCollector.completionStatsData
 import org.jetbrains.kotlin.idea.statistics.FinishReasonStats
 
-class LookupCancelWatcher : StartupActivity {
+class LookupCancelWatcher(val project: Project) : ProjectComponent {
     private class Reminiscence(editor: Editor, offset: Int) {
         var editor: Editor? = editor
         private var marker: RangeMarker? = editor.document.createRangeMarker(offset, offset)
@@ -74,8 +74,7 @@ class LookupCancelWatcher : StartupActivity {
     private var lastReminiscence: Reminiscence? = null
 
     companion object {
-        fun getInstance(project: Project): LookupCancelWatcher = project.getService(LookupCancelWatcher::class.java)
-            ?: error("Unable to locate service ${LookupCancelWatcher::class.qualifiedName}")
+        fun getInstance(project: Project): LookupCancelWatcher = project.getComponent(LookupCancelWatcher::class.java)!!
 
         val AUTO_POPUP_AT = Key<Int>("LookupCancelWatcher.AUTO_POPUP_AT")
     }
@@ -99,7 +98,7 @@ class LookupCancelWatcher : StartupActivity {
         }
     }
 
-    override fun runActivity(project: Project) {
+    override fun initComponent() {
         CompletionPhaseListener.TOPIC.subscribe(project, CompletionPhaseListener { isCompletionRunning ->
             if (isCompletionRunning) {
                 if (completionStatsData != null) {

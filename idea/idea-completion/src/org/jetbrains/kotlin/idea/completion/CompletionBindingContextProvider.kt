@@ -46,7 +46,8 @@ class CompletionBindingContextProvider(project: Project) {
 
     companion object {
         fun getInstance(project: Project): CompletionBindingContextProvider =
-            project.getComponent(CompletionBindingContextProvider::class.java)
+            project.getService(CompletionBindingContextProvider::class.java)
+                ?: error("Unable to locate service CompletionBindingContextProvider")
 
         var ENABLED = true
     }

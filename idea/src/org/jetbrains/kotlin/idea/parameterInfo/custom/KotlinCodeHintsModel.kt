@@ -24,7 +24,8 @@ import java.util.concurrent.ConcurrentHashMap
 class KotlinCodeHintsModel(val project: Project) : EditorFactoryListener {
     companion object {
         fun getInstance(project: Project): KotlinCodeHintsModel =
-            project.getComponent(KotlinCodeHintsModel::class.java) ?: error("Component `KotlinCodeHintsModel` is expected to be registered")
+            project.getService(KotlinCodeHintsModel::class.java)
+                ?: error("Unable to locate service KotlinCodeHintsModel")
     }
 
     private class DocumentExtensionInfoModel(val document: Document) {

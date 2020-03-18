@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.idea.configuration.ui.KotlinConfigurationCheckerComp
 class KotlinExternalSystemSyncListener : ExternalSystemTaskNotificationListenerAdapter() {
     override fun onStart(id: ExternalSystemTaskId, workingDir: String) {
         val project = id.findResolvedProject() ?: return
-        KotlinMigrationProjectComponent.getInstanceIfNotDisposed(project)?.onImportAboutToStart()
+        KotlinMigrationProjectService.getInstanceIfNotDisposed(project)?.onImportAboutToStart()
         KotlinConfigurationCheckerComponent.getInstanceIfNotDisposed(project)?.syncStarted()
     }
 
